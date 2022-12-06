@@ -1,0 +1,41 @@
+fibs??(10??);
+
+??~ fib(n)
+??<
+
+    first = 1;
+    second = 1;
+    iter = 2;
+
+    fibs??(0??) = first;
+    fibs??(1??) = second;
+
+    ??^ ( iter < n )
+    ??<
+        tmp = second;
+        second = second + first;
+        first = tmp;
+        fibs??(iter??) = second;
+        iter = iter + 1;
+    ??>
+
+    ??$ 0;
+??>
+
+??~ main()
+??<
+    n = 10;
+    ans = fib(n);
+    tmp = 0;
+
+    iter = 0;
+
+    ??^ (iter < n)
+    ??<
+        tmp = fibs??(iter??);
+        ??>> tmp;
+        iter = iter + 1;
+    ??>
+
+    ??$ 0;
+??>

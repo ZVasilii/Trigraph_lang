@@ -1,0 +1,165 @@
+
+game_poly??(120000??);
+tmp_poly??(120000??);
+
+??~ draw()
+??<
+    x = 0;
+    y = 0;
+
+    ??^ (x < 400)
+    ??<
+        ??^ (y < 300)
+        ??<
+            tmp_val = game_poly??(x + 400 * y??);
+            graph_put_pixel(x, y, tmp_val);
+
+            y = y + 1;
+        ??>
+        y = 0;
+        x = x + 1;
+    ??>
+    graph_flush();
+    ??$ 0;
+??>
+
+??~ create_chaos()
+??<
+    x = 0;
+    y = 0;
+
+    ??^ (x < 400)
+    ??<
+        ??^(y < 300)
+        ??<
+
+            id = x + y * 400;
+            game_poly??(id??) = graph_rand();
+
+            y = y + 1;
+        ??>
+        y = 0;
+        x = x + 1;
+    ??>
+
+    ??$ 0;
+??>
+
+??~ swap_poly()
+??<
+    x = 0;
+    y = 0;
+
+    ??^ (x < 400)
+    ??<
+        ??^(y < 300)
+        ??<
+
+            id = x + y * 400;
+            tmp = game_poly??(id??);
+            game_poly??(id??) = tmp_poly??(id??);
+            tmp_poly??(id??) = tmp;
+
+            y = y + 1;
+        ??>
+        y = 0;
+        x = x + 1;
+    ??>
+
+    ??$ 0;
+??>
+
+??~ count_neighb(x, y, state)
+??<
+    ret = 0;
+    current_x = x - 1;
+    current_y = y - 1;
+
+    ??^(current_x <= x + 1)
+    ??<
+        ??^(current_y <= y + 1)
+        ??<
+            tmp = 0;
+            ???((current_x == x) ??@??@ (current_y == y))
+            ??<
+               tmp = 1;
+            ??>
+
+            ??? ((current_x < 0) ??!??! (current_x >= 400))
+            ??<
+                tmp = 1;
+            ??>
+
+            ??? ((current_y < 0) ??!??! current_y >= 300)
+            ??<
+                tmp = 1;
+            ??>
+            id = current_x + 400 * current_y;
+            ??? ((game_poly??(id??) == state) ??@??@ (tmp == 0)) ??<
+                ret = ret + 1;
+            ??>
+
+            current_y = current_y + 1;
+        ??>
+        current_y = y - 1;
+        current_x = current_x + 1;
+    ??>
+
+    ??$ ret;
+??>
+
+??~ determine_state(x, y)
+??<
+    state = 1;
+    neighb =  count_neighb(x, y, state);
+    current_val = game_poly??(x + 400 * y??);
+    ??? ((current_val == 0) ??@??@ (neighb == 3))
+    ??<
+        ??$ 1;
+    ??>
+    ??? ((current_val == 1) ??@??@ ((neighb == 3) ??!??! (neighb == 2)))
+    ??<
+        ??$ 1;
+    ??>
+    ??$ 0;
+??>
+
+??~ evolution()
+??<
+    x = 0;
+    y = 0;
+    ??^ (x < 400)
+    ??<
+        ??^(y < 300)
+        ??<
+            state = determine_state(x, y);
+            id = x + y * 400;
+            tmp_poly??(id??) = state;
+
+            y = y + 1;
+        ??>
+    y = 0;
+    x = x + 1;
+    ??>
+    ??$ 0;
+??>
+
+??~ main()
+??<
+    x = 400;
+    y = 300;
+    graph_init(x, y);
+    create_chaos();
+
+    infinite = 1;
+    ??^(infinite > 0)
+    ??<
+        graph_is_closed();
+        graph_clear();
+
+        evolution();
+        swap_poly();
+        draw();
+    ??>
+    ??$ 0;
+??>

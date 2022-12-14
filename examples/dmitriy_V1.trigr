@@ -1,0 +1,162 @@
+colour??(4??);
+
+??~ abs_dummy(x)
+??<
+    zero = 0;
+    ??? (x < zero)
+    ??<
+        tmp = zero - x ;
+        ??$ tmp;
+    ??>
+    ??$ x;
+
+??>
+
+??~ int_cos(x)
+??<
+    thosand = 1000;
+    four_thosand = 4000;
+    zero = 0;
+    fracted_x = x % thosand;
+
+    x_dummy = abs_dummy(x);
+    per_id = (x_dummy % four_thosand) / thosand;
+
+    per_id_tmp = per_id % 2;
+    ??? (per_id_tmp == 1)
+    ??<
+        fracted_x = thosand - fracted_x;
+    ??>
+
+    sign = zero - 1;
+
+    ??? ((per_id == 1) ??!??! (per_id == 2))
+    ??<
+        sign = 1;
+    ??>
+    y = (fracted_x * fracted_x) / thosand - thosand;
+
+    tmp = y * sign;
+    ??$ tmp;
+??>
+
+??~ palette_int(t, d1, d2, d3)
+??<
+tmp = (628318 * (((1000 * t) / 1000) + d1))/100000;
+tmp_d1 = int_cos(tmp);
+
+tmp = (628318 * (((1000 * t) / 1000) + d2))/100000;
+tmp_d2 = int_cos(tmp);
+
+tmp = (628318 * (((0 * t) / 1000) + d3))/100000;
+tmp_d3 = int_cos(tmp);
+
+colour??(0??) = (500 + ((500 * tmp_d1) / 1000)) / 5;
+colour??(1??) = (500 + ((500 * tmp_d2) / 1000)) / 5;
+colour??(2??) = (500 + ((500 * tmp_d3) / 1000)) / 5;
+colour??(3??) = t / 4;
+??$ tmp;
+
+??>
+
+??~ shader_1(x, y, res_x, res_y, time)
+??<
+    result = 255;
+    uv_x = (x * 1000) / res_x;
+    uv_y = (y * 1000) / res_y;
+    time = time / 2;
+    maxIter = 75;
+
+    tmp = (time / 3) - 2000;
+    tmp_r = int_cos(tmp);
+    r = (788 * ((tmp_r / 5) + 850)) / 1000;
+
+    tmp = (time / 3);
+    tmp_c1 = int_cos(tmp);
+    c1 = (r * tmp_c1) / 1000;
+
+    tmp = (time / 3 + 3000);
+    tmp_c2 = int_cos(tmp);
+    c2 = (r * tmp_c2) / 1000;
+
+    z1 = 3 * (uv_x - 500);
+    z2 = 2 * (uv_y - 500);
+    cmp_left = 0;
+
+    iterations = 0;
+    ??^ (iterations < maxIter)
+    ??<
+        z1_tmp = (((z1 * z1) - (z2 * z2)) / 1000) + c1;
+        z2 = (((z2 * z1) + (z1 * z2)) / 1000) + c2;
+        z1 = z1_tmp;
+        cmp_left = ((z1 * z1) + (z2 * z2)) / 10000;
+        ??? (cmp_left > 4000)
+        ??<
+        ??-;
+        ??>
+        iterations = iterations + 1;
+    ??>
+
+    ??? (iterations != maxIter)
+    ??<
+        t = (iterations * 1000) / maxIter;
+
+        tmp = time + 3000;
+        tmp_1 = int_cos(tmp);
+        tmp_1 = 300 + ((tmp_1 * 2) / 5);
+
+        tmp = time + 3600;
+        tmp_2 = int_cos(tmp);
+        tmp_2 = 200 + ((tmp_2 * 3) / 10);
+
+        tmp = time + 4400;
+        tmp_3 = int_cos(tmp);
+        tmp_3 = 200 + ((tmp_3 * 3) / 10);
+        palette_int(t, tmp_1, tmp_2, tmp_3);
+    ??>
+    ??$ iterations;
+
+??>
+
+??~ main()
+??<
+    zero = 0;
+    cur_time = 0;
+    width = 1024;
+    heigth = 600;
+    y = 0;
+    x = 0;
+    clr_0 = 0;
+    clr_1 = 0;
+    clr_2 = 0;
+    clr_3 = 0;
+    graph_init(width, heigth);
+
+    infinite = 1;
+    ??^(infinite > 0)
+    ??<
+       cur_time = graph_get_time(zero);
+
+        ??^ (y < heigth)
+        ??<
+            ??^(x < width)
+            ??<
+                shader_1(x, y, width, heigth, cur_time);
+                clr_0 = colour??(0??);
+                clr_1 = colour??(1??);
+                clr_2 = colour??(2??);
+                clr_3 = colour??(3??);
+                graph_put_pixel_colour(x, y, clr_0,clr_1,clr_2,clr_3);
+
+
+                x = x + 1;
+            ??>
+        x = 0;
+        y = y + 1;
+        ??>
+        y = 0;
+        graph_flush();
+    ??>
+
+    ??$ zero;
+??>

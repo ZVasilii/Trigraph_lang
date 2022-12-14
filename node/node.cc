@@ -58,6 +58,26 @@ void CodeGenCtx::initGraphics(std::shared_ptr<ScopeN> globalScope) {
     decl->setFunc(func);
     globalScope->insertDecl(name, decl);
 
+
+    // graph_put_pixel_colour
+    name = "graph_put_pixel_colour";
+    decl = std::make_shared<glang::FuncDeclN>(name);
+    functTy = llvm::FunctionType::get(m_builder->getVoidTy(),
+    {m_builder->getInt32Ty(), m_builder->getInt32Ty(), m_builder->getInt32Ty(), m_builder->getInt32Ty(),
+    m_builder->getInt32Ty(), m_builder->getInt32Ty()}, false);
+    func = llvm::Function::Create(functTy, llvm::Function::ExternalLinkage, name, *m_module);
+    decl->setFunc(func);
+    globalScope->insertDecl(name, decl);
+
+    //  graph_get_time
+    name = "graph_get_time";
+    decl = std::make_shared<glang::FuncDeclN>(name);
+    functTy = llvm::FunctionType::get(m_builder->getInt32Ty(),{m_builder->getInt32Ty()}, false);
+    func = llvm::Function::Create(functTy, llvm::Function::ExternalLinkage, name, *m_module);
+    decl->setFunc(func);
+    globalScope->insertDecl(name, decl);
+
+
     // graph_put_pixel
     name = "graph_put_pixel";
     decl = std::make_shared<glang::FuncDeclN>(name);

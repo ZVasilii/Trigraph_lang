@@ -3,6 +3,8 @@
 
 sf::RenderWindow w;
 sf::Event event;
+std::chrono::time_point<std::chrono::high_resolution_clock> g_timer = std::chrono::high_resolution_clock::now();
+
 
 void graph_init(size_t horiz, size_t vertic)
 {
@@ -45,4 +47,17 @@ void graph_clear()
 int graph_rand()
 {
     return rand() % 2;
+}
+
+//DLC
+uint32_t graph_get_time()
+{
+    return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - g_timer).count();
+}
+
+void graph_put_pixel_colour(int x, int y, int32_t r, int32_t g, int32_t b, int32_t t)
+{
+    sf::Color color(r,g,b,t);
+    sf::Vertex vertex({(float) x, (float) y}, color);
+    w.draw(&vertex, 1, sf::Points);
 }
